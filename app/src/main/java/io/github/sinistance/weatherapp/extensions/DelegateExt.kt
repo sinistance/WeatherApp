@@ -1,4 +1,4 @@
-package io.github.sinistance.weatherapp.utils
+package io.github.sinistance.weatherapp.extensions
 
 import kotlin.reflect.KProperty
 

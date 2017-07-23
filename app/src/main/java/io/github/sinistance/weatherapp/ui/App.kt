@@ -1,7 +1,7 @@
 package io.github.sinistance.weatherapp.ui
 
 import android.app.Application
-import io.github.sinistance.weatherapp.utils.DelegateExt
+import io.github.sinistance.weatherapp.extensions.DelegateExt
 
 /**
  * Created by suryadarma on 22/7/17.

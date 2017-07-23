@@ -1,4 +1,4 @@
-package io.github.sinistance.weatherapp.data
+package io.github.sinistance.weatherapp.data.server
 
 /**
  * Created by suryadarma on 16/7/17.

@@ -1,9 +1,8 @@
 package io.github.sinistance.weatherapp.domain.mappers
 
-import io.github.sinistance.weatherapp.data.Forecast
-import io.github.sinistance.weatherapp.data.ForecastResult
+import io.github.sinistance.weatherapp.data.server.Forecast
+import io.github.sinistance.weatherapp.data.server.ForecastResult
 import io.github.sinistance.weatherapp.domain.model.ForecastList
-import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import io.github.sinistance.weatherapp.domain.model.Forecast as ModelForecast
@@ -13,13 +12,8 @@ import io.github.sinistance.weatherapp.domain.model.Forecast as ModelForecast
  */
 class ForecastDataMapper {
 
-    private fun convertDate(date: Long): String {
-        val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-        return df.format(date)
-    }
-
-    private fun convertForecastItemToDomain(forecast: Forecast): ModelForecast {
-        return ModelForecast(convertDate(forecast.dt),
+    private fun convertForecastItemToDomain(forecast: Forecast) = with(forecast) {
+        ModelForecast(dt,
                 forecast.weather[0].description,
                 forecast.temp.max.toInt(),
                 forecast.temp.min.toInt(),
@@ -33,8 +27,11 @@ class ForecastDataMapper {
         }
     }
 
-    fun convertFromDataModel(forecast: ForecastResult): ForecastList {
-        return ForecastList(forecast.city.name, forecast.city.country, convertForecastListToDomain(forecast.list))
+    fun convertFromDataModel(zipCode: Long, forecast: ForecastResult): ForecastList {
+        return ForecastList(zipCode,
+                forecast.city.name,
+                forecast.city.country,
+                convertForecastListToDomain(forecast.list))
     }
 
     private fun generateIconUrl(iconCode: String): String = "http://openweathermap.org/img/w/$iconCode.png"
