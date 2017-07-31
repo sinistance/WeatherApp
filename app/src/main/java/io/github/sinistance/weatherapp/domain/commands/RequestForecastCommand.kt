@@ -1,16 +1,20 @@
 package io.github.sinistance.weatherapp.domain.commands
 
-import io.github.sinistance.weatherapp.data.server.ForecastRequest
-import io.github.sinistance.weatherapp.domain.mappers.ForecastDataMapper
+import io.github.sinistance.weatherapp.domain.datasource.ForecastProvider
 import io.github.sinistance.weatherapp.domain.model.ForecastList
 
 /**
  * Created by suryadarma on 17/7/17.
  */
-class RequestForecastCommand(private val zipCode: Long) : Command<ForecastList> {
+class RequestForecastCommand(val zipCode: Long,
+                             val forecastProvider: ForecastProvider = ForecastProvider()
+) : Command<ForecastList> {
+
+    companion object {
+        val DAYS = 7
+    }
 
     override fun execute(): ForecastList {
-        val forecastRequest = ForecastRequest(zipCode)
-        return ForecastDataMapper().convertFromDataModel(zipCode, forecastRequest.execute())
+        return forecastProvider.requestByZipCode(zipCode, DAYS)
     }
 }

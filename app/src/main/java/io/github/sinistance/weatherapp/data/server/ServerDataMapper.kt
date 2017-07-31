@@ -1,7 +1,5 @@
-package io.github.sinistance.weatherapp.domain.mappers
+package io.github.sinistance.weatherapp.data.server
 
-import io.github.sinistance.weatherapp.data.server.Forecast
-import io.github.sinistance.weatherapp.data.server.ForecastResult
 import io.github.sinistance.weatherapp.domain.model.ForecastList
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -10,7 +8,7 @@ import io.github.sinistance.weatherapp.domain.model.Forecast as ModelForecast
 /**
  * Created by suryadarma on 17/7/17.
  */
-class ForecastDataMapper {
+class ServerDataMapper {
 
     private fun convertForecastItemToDomain(forecast: Forecast) = with(forecast) {
         ModelForecast(dt,
@@ -27,7 +25,7 @@ class ForecastDataMapper {
         }
     }
 
-    fun convertFromDataModel(zipCode: Long, forecast: ForecastResult): ForecastList {
+    fun convertToDomain(zipCode: Long, forecast: ForecastResult): ForecastList {
         return ForecastList(zipCode,
                 forecast.city.name,
                 forecast.city.country,
