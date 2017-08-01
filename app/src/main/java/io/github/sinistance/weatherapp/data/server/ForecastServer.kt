@@ -11,6 +11,8 @@ class ForecastServer(val dataMapper: ServerDataMapper = ServerDataMapper(),
                      val forecastDb: ForecastDb = ForecastDb()
 ) : ForecastDataSource {
 
+    override fun requestDayForecast(id: Long) = throw UnsupportedOperationException()
+
     override fun requestForecastByZipCode(zipCode: Long, date: Long): ForecastList? {
         val result = ForecastByZipCodeRequest(zipCode).execute()
         val converted = dataMapper.convertToDomain(zipCode, result)

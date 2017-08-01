@@ -2,7 +2,7 @@ package io.github.sinistance.weatherapp.domain.datasource
 
 import io.github.sinistance.weatherapp.data.db.ForecastDb
 import io.github.sinistance.weatherapp.data.server.ForecastServer
-import io.github.sinistance.weatherapp.domain.model.ForecastList
+import io.github.sinistance.weatherapp.domain.model.Forecast
 import io.github.sinistance.weatherapp.extensions.firstResult
 
 /**
@@ -15,13 +15,16 @@ class ForecastProvider(val sources: List<ForecastDataSource> = ForecastProvider.
         val SOURCES = listOf(ForecastDb(), ForecastServer())
     }
 
-    fun requestByZipCode(zipCode: Long, days: Int) =
-            sources.firstResult { requestSource(it, days, zipCode) }
+    fun requestByZipCode(zipCode: Long, days: Int) = requestToSources {
+        val res = it.requestForecastByZipCode(zipCode, todayTimeSpan())
+        if (res != null && res.size >= days) res else null
+    }
 
-    private fun requestSource(source: ForecastDataSource, days: Int, zipCode: Long): ForecastList? {
-        val res = source.requestForecastByZipCode(zipCode, todayTimeSpan())
-        return if (res != null && res.size >= days) res else null
+    fun requestForecast(id: Long): Forecast = requestToSources {
+        it.requestDayForecast(id)
     }
 
     private fun  todayTimeSpan() = System.currentTimeMillis() / DAY_IN_MILLIS * DAY_IN_MILLIS
+
+    private fun <T : Any> requestToSources(f: (ForecastDataSource) -> T?): T = sources.firstResult(f)
 }

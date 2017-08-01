@@ -1,11 +1,9 @@
 package io.github.sinistance.weatherapp.data.db
 
 import io.github.sinistance.weatherapp.domain.datasource.ForecastDataSource
+import io.github.sinistance.weatherapp.domain.model.Forecast
 import io.github.sinistance.weatherapp.domain.model.ForecastList
-import io.github.sinistance.weatherapp.extensions.clear
-import io.github.sinistance.weatherapp.extensions.parseList
-import io.github.sinistance.weatherapp.extensions.parseOpt
-import io.github.sinistance.weatherapp.extensions.toVarargArray
+import io.github.sinistance.weatherapp.extensions.*
 import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.db.select
 
@@ -15,6 +13,11 @@ import org.jetbrains.anko.db.select
 class ForecastDb(val forecastDbHelper: ForecastDbHelper = ForecastDbHelper.instance,
                  val dataMapper: DbDataMapper = DbDataMapper()
 ) : ForecastDataSource {
+
+    override fun requestDayForecast(id: Long): Forecast? = forecastDbHelper.use {
+        val forecast = select(DayForecastTable.NAME).byId(id).parseOpt { DayForecast(HashMap(it)) }
+        forecast?.let { dataMapper.convertDayToDomain(it) }
+    }
 
     override fun requestForecastByZipCode(zipCode: Long, date: Long) = forecastDbHelper.use {
         val dailyRequest = "${DayForecastTable.CITY_ID} = ? AND ${DayForecastTable.DATE} >= ?"

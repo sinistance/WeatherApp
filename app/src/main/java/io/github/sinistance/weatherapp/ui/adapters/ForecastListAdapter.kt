@@ -9,9 +9,8 @@ import io.github.sinistance.weatherapp.R
 import io.github.sinistance.weatherapp.domain.model.Forecast
 import io.github.sinistance.weatherapp.domain.model.ForecastList
 import io.github.sinistance.weatherapp.extensions.ctx
+import io.github.sinistance.weatherapp.extensions.toDateString
 import kotlinx.android.synthetic.main.item_forecast.view.*
-import java.text.DateFormat
-import java.util.*
 
 /**
  * Created by suryadarma on 16/7/17.
@@ -37,17 +36,12 @@ class ForecastListAdapter(val weekForecast: ForecastList,
         fun bindForecast(forecast: Forecast) {
             with(forecast) {
                 Picasso.with(itemView.ctx).load(iconUrl).into(itemView.icon)
-                itemView.date.text = convertDate(date)
+                itemView.date.text = date.toDateString()
                 itemView.description.text = description
                 itemView.maxTemperature.text = "${high}º"
                 itemView.minTemperature.text = "${low}º"
                 itemView.setOnClickListener { itemClick(this) }
             }
-        }
-
-        private fun convertDate(date: Long): String {
-            val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-            return df.format(date)
         }
     }
 }

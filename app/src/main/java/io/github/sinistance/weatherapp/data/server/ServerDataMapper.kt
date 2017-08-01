@@ -11,7 +11,8 @@ import io.github.sinistance.weatherapp.domain.model.Forecast as ModelForecast
 class ServerDataMapper {
 
     private fun convertForecastItemToDomain(forecast: Forecast) = with(forecast) {
-        ModelForecast(dt,
+        ModelForecast(-1,
+                dt,
                 forecast.weather[0].description,
                 forecast.temp.max.toInt(),
                 forecast.temp.min.toInt(),
