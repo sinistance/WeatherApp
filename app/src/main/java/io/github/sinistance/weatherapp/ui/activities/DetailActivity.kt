@@ -2,6 +2,7 @@ package io.github.sinistance.weatherapp.ui.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import io.github.sinistance.weatherapp.R
@@ -13,13 +14,16 @@ import io.github.sinistance.weatherapp.extensions.toDateString
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 import java.text.DateFormat
 
 /**
  * Created by suryadarma on 1/8/17.
  */
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), ToolbarManager {
+
+    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
 
     companion object {
         val ID = "DetailActivity:id"
@@ -29,8 +33,10 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        initToolbar()
 
-        title = intent.getStringExtra(CITY_NAME)
+        toolbarTitle = intent.getStringExtra(CITY_NAME)
+        enableHomeAsUp { onBackPressed() }
 
         doAsync {
             val result = RequestDayForecastCommand(intent.getLongExtra(ID, -1)).execute()
@@ -40,7 +46,7 @@ class DetailActivity : AppCompatActivity() {
 
     private fun bindForecast(forecast: Forecast) = with(forecast) {
         Picasso.with(ctx).load(iconUrl).into(icon)
-        supportActionBar?.subtitle = date.toDateString(DateFormat.FULL)
+        toolbar.subtitle = date.toDateString(DateFormat.FULL)
         weatherDescription.text = description
         bindWeather(high to maxTemperature, low to minTemperature)
     }
