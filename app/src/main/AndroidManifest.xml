@@ -19,12 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activities.DetailActivity">
+        <activity android:name=".ui.activities.DetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.activities.SettingsActivity"
+            android:label="@string/settings" />
     </application>
 
 </manifest>

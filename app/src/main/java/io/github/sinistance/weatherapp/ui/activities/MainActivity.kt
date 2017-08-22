@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import io.github.sinistance.weatherapp.R
 import io.github.sinistance.weatherapp.domain.commands.RequestForecastCommand
+import io.github.sinistance.weatherapp.extensions.DelegateExt
 import io.github.sinistance.weatherapp.ui.adapters.ForecastListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -14,6 +15,8 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity(), ToolbarManager {
+
+    private val zipCode by DelegateExt.preference(this, SettingsActivity.ZIP_CODE, SettingsActivity.DEFAULT_ZIP)
 
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
 
@@ -24,18 +27,23 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
 
         forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(forecastList)
+    }
 
-        doAsync {
-            val result = RequestForecastCommand(zipCode = 94040).execute()
-            uiThread {
-                val adapter = ForecastListAdapter(result) {
-                    startActivity<DetailActivity>(DetailActivity.ID to it.id,
-                            DetailActivity.CITY_NAME to result.city)
-                }
+    override fun onResume() {
+        super.onResume()
+        loadForecast()
+    }
 
-                forecastList.adapter = adapter
-                toolbarTitle = "${result.city} (${result.country})"
+    private fun loadForecast() = doAsync {
+        val result = RequestForecastCommand(zipCode).execute()
+        uiThread {
+            val adapter = ForecastListAdapter(result) {
+                startActivity<DetailActivity>(DetailActivity.ID to it.id,
+                        DetailActivity.CITY_NAME to result.city)
             }
+
+            forecastList.adapter = adapter
+            toolbarTitle = "${result.city} (${result.country})"
         }
     }
 }
